@@ -1,8 +1,7 @@
 'use strict';
 
 /////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANKIST APP
+//////////////////// BANKIST ////////////////////
 
 // Data
 const account1 = {
@@ -61,19 +60,7 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
-
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
-
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-/////////////////////////////////////////////////
+// Functions
 const display = function (movements, sort = false) {
   containerMovements.innerHTML = '';
 
@@ -104,8 +91,6 @@ const createUsernames = function (accs) {
         .join(''))
   );
 };
-
-createUsernames(accounts);
 
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
@@ -138,9 +123,8 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc);
 };
 
-updateUI(account2);
+createUsernames(accounts);
 
-///////////////////////////////////////
 // Event handlers
 let currentAccount;
 
@@ -185,6 +169,9 @@ btnTransfer.addEventListener('click', function (e) {
     }
 
     updateUI(currentAccount);
+
+    inputTransferAmount.blur();
+    inputTransferTo.blur();
   }
 });
 
