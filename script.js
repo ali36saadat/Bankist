@@ -89,6 +89,7 @@ const labelTimer = document.querySelector('.timer');
 
 const containerApp = document.querySelector('.app');
 const containerMovements = document.querySelector('.movements');
+const containerNavInputs = document.querySelector('.login');
 
 const btnLogin = document.querySelector('.login__btn');
 const btnTransfer = document.querySelector('.form__btn--transfer');
@@ -96,8 +97,8 @@ const btnLoan = document.querySelector('.form__btn--loan');
 const btnClose = document.querySelector('.form__btn--close');
 const btnSort = document.querySelector('.btn--sort');
 
-const inputLoginUsername = document.querySelector('.login__input--user');
-const inputLoginPin = document.querySelector('.login__input--pin');
+// const inputLoginUsername = document.querySelector('.login__input--user');
+// const inputLoginPin = document.querySelector('.login__input--pin');
 const inputTransferTo = document.querySelector('.form__input--to');
 const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
@@ -105,6 +106,57 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 // Functions
+const navInputs = function (state) {
+  containerNavInputs.innerHTML = '';
+  labelWelcome.innerHTML = '';
+
+  let stateInputs = '',
+    changeBtn = '';
+
+  if (state === 1) {
+    changeBtn = `<button type="submit" class="form__change__btn">Sign In</button>`;
+
+    stateInputs = `<p class="nav__right__title">Log in to get started
+ : </p><input
+          type="text"
+          placeholder="user"
+          class="login__input login__input--user"
+        />
+        <input
+          type="text"
+          placeholder="PIN"
+          maxlength="4"
+          class="login__input login__input--pin"
+        />
+        <button type="button" class="login__btn">&rarr;</button>`;
+  } else if (state === 2) {
+    stateInputs = `
+        <button type="submit" class="logout__btn">Log Out</button>`;
+    labelWelcome.textContent = labelWelcome.textContent = `Welcome Back ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+  } else if (state === 3) {
+    changeBtn = `<button type="submit" class="form__change__btn">Log In</button>`;
+
+    stateInputs = `<p class="nav__right__title">Sign in to get started : </p><input
+          type="text"
+          placeholder="user ( full name )"
+          class="sign__in__input sign__in__input--user"
+        />
+        <input
+          type="text"
+          placeholder="PIN ( max 4 digits )"
+          maxlength="4"
+          class="sign__in__input sign__in__input--pin"
+        />
+        <button type="button" class="sign__in__btn">&rArr;</button>`;
+  }
+
+  containerNavInputs.insertAdjacentHTML('afterbegin', stateInputs);
+  labelWelcome.insertAdjacentHTML('afterbegin', changeBtn);
+
+  stateBtn(state);
+};
 
 const calcDaysPassed = function (date2, date1) {
   Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
@@ -211,8 +263,6 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc);
 };
 
-createUsernames(accounts);
-
 const startLogOutTimer = function () {
   const tick = function () {
     const min = String(Math.trunc(time / 60)).padStart(2, 0);
@@ -224,11 +274,12 @@ const startLogOutTimer = function () {
       clearInterval(timer);
       labelWelcome.textContent = 'Log in to get started';
       containerApp.style.opacity = 0;
+      navInputs(1);
     }
     time--;
   };
 
-  let time = 120;
+  let time = 10;
 
   tick();
   const timer = setInterval(tick, 1000);
@@ -237,39 +288,118 @@ const startLogOutTimer = function () {
 };
 
 // Event handlers
+const stateBtn = function (state) {
+  if (state === 1) {
+    const btnLogin = document.querySelector('.login__btn');
+    const inputLoginUsername = document.querySelector('.login__input--user');
+    const inputLoginPin = document.querySelector('.login__input--pin');
+    // const labelWelcome = document.querySelector('.welcome');
+    const formChangeBtn = document.querySelector('.form__change__btn');
 
-btnLogin.addEventListener('click', function (e) {
-  e.preventDefault();
+    if (btnLogin) {
+      btnLogin.addEventListener('click', function (e) {
+        e.preventDefault();
+        currentAccount = accounts.find(
+          acc => acc.username === inputLoginUsername.value
+        );
 
-  currentAccount = accounts.find(
-    acc => acc.username === inputLoginUsername.value
-  );
+        if (currentAccount?.pin === Number(inputLoginPin.value)) {
+          // labelWelcome.textContent = `Welcome Back ${
+          //   currentAccount.owner.split(' ')[0]
+          // }`;
 
-  if (currentAccount?.pin === Number(inputLoginPin.value)) {
-    labelWelcome.textContent = `Welcome Back ${
-      currentAccount.owner.split(' ')[0]
-    }`;
+          labelDate.textContent = new Intl.DateTimeFormat(
+            currentAccount.locale,
+            {
+              hour: 'numeric',
+              minute: 'numeric',
+              day: 'numeric',
+              month: 'numeric',
+              year: 'numeric',
+            }
+          ).format(new Date());
 
-    labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, {
-      hour: 'numeric',
-      minute: 'numeric',
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric',
-    }).format(new Date());
+          containerApp.style.opacity = 100;
 
-    containerApp.style.opacity = 100;
+          updateUI(currentAccount);
 
-    updateUI(currentAccount);
+          if (timer) clearInterval(timer);
+          timer = startLogOutTimer();
 
-    if (timer) clearInterval(timer);
-    timer = startLogOutTimer();
+          navInputs(2);
+        }
+
+        inputLoginUsername.value = inputLoginPin.value = '';
+        inputLoginPin.blur();
+        inputLoginUsername.blur();
+      });
+
+      formChangeBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        navInputs(3);
+      });
+    }
+  } else if (state === 2) {
+    const btnLogout = document.querySelector('.logout__btn');
+    if (btnLogout) {
+      btnLogout.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        clearInterval(timer);
+        labelWelcome.textContent = 'Log in to get started';
+        containerApp.style.opacity = 0;
+        navInputs(1);
+      });
+    }
+  } else if (state === 3) {
+    const btnSignIn = document.querySelector('.sign__in__btn');
+    const inputSignInUsername = document.querySelector(
+      '.sign__in__input--user'
+    );
+    const inputSignInPin = document.querySelector('.sign__in__input--pin');
+
+    const formChangeBtn = document.querySelector('.form__change__btn');
+
+    btnSignIn.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const searchAcc = accounts.find(
+        acc =>
+          acc.owner ===
+          inputSignInUsername.value
+            .toLowerCase()
+            .split(' ')
+            .map(name => name[0])
+            .join('')
+      );
+      console.log(searchAcc);
+      if (!searchAcc) {
+        console.log('push');
+        // labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, {
+        //   hour: 'numeric',
+        //   minute: 'numeric',
+        //   day: 'numeric',
+        //   month: 'numeric',
+        //   year: 'numeric',
+        // }).format(new Date());
+        // containerApp.style.opacity = 100;
+        // updateUI(currentAccount);
+        // if (timer) clearInterval(timer);
+        // timer = startLogOutTimer();
+        // navInputs(2);
+      }
+
+      inputSignInUsername.value = inputSignInPin.value = '';
+      inputSignInUsername.blur();
+      inputSignInPin.blur();
+    });
+
+    formChangeBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      navInputs(1);
+    });
   }
-
-  inputLoginUsername.value = inputLoginPin.value = '';
-  inputLoginPin.blur();
-  inputLoginUsername.blur();
-});
+};
 
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
@@ -348,3 +478,5 @@ btnSort.addEventListener('click', function (e) {
   sorted = !sorted;
   display(currentAccount.movements, sorted);
 });
+navInputs(1);
+createUsernames(accounts);

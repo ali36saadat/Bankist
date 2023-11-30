@@ -49,7 +49,7 @@ nav {
   font-size: 1.6rem;
   font-family: inherit;
   text-align: center;
-  width: 12rem;
+  width: 20rem;
   border-radius: 10rem;
   margin-right: 1rem;
   color: inherit;
@@ -81,7 +81,7 @@ nav {
   font-size: 1.6rem;
   font-family: inherit;
   text-align: center;
-  width: 12rem;
+  width: 20rem;
   border-radius: 10rem;
   margin-right: 1rem;
   color: inherit;
@@ -89,6 +89,48 @@ nav {
   border: 1px solid #e52a5a;
   background-color: #e52a5a;
   color: #fff;
+}
+
+.sign__in__input {
+  border: none;
+  padding: 0.5rem 2rem;
+  font-size: 1.6rem;
+  font-family: inherit;
+  text-align: center;
+  width: 20rem;
+  border-radius: 10rem;
+  margin-right: 1rem;
+  color: inherit;
+  border: 1px solid #fff;
+  transition: all 0.3s;
+}
+
+.sign__in__input:focus {
+  outline: none;
+  border: 1px solid #ff9900;
+  background-color: #ffbb44;
+}
+
+.sign__in__input::placeholder {
+  color: #adadad;
+}
+
+.sign__in__btn {
+  border: none;
+  background: none;
+  font-size: 2.2rem;
+  color: inherit;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.nav__right__title {
+  border: none;
+  background: none;
+  font-size: 2.2rem;
+  color: inherit;
+  transition: all 0.3s;
+  padding-right: 1rem;
 }
 
 .login__btn:hover,
@@ -99,6 +141,20 @@ nav {
   color: #777;
 }
 
+.form__change__btn {
+  border: none;
+  padding: 0.5rem 2rem;
+  font-size: 1.6rem;
+  font-family: inherit;
+  text-align: center;
+  width: 20rem;
+  border-radius: 10rem;
+  margin-right: 1rem;
+  color: white;
+  border: 1px solid #0099ff;
+  background-color: #4fbbff;
+  transition: all 0.3s;
+}
 /* MAIN */
 .app {
   position: relative;
