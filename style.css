@@ -94,10 +94,10 @@ nav {
 .sign__in__input {
   border: none;
   padding: 0.5rem 2rem;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-family: inherit;
   text-align: center;
-  width: 20rem;
+  width: 15rem;
   border-radius: 10rem;
   margin-right: 1rem;
   color: inherit;
@@ -147,7 +147,7 @@ nav {
   font-size: 1.6rem;
   font-family: inherit;
   text-align: center;
-  width: 20rem;
+  width: 12rem;
   border-radius: 10rem;
   margin-right: 1rem;
   color: white;

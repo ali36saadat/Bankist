@@ -71,7 +71,6 @@ const account11 = {
   currency: 'USD',
   locale: 'en-US',
 };
-
 // const accounts = [account1, account2, account3, account4, account10, account11];
 const accounts = [account10, account11];
 let currentAccount,
@@ -140,15 +139,19 @@ const navInputs = function (state) {
 
     stateInputs = `<p class="nav__right__title">Sign in to get started : </p><input
           type="text"
-          placeholder="user ( full name )"
+          placeholder="full name"
           class="sign__in__input sign__in__input--user"
         />
         <input
           type="text"
-          placeholder="PIN ( max 4 digits )"
+          placeholder="PIN"
           maxlength="4"
           class="sign__in__input sign__in__input--pin"
         />
+     <select name="cars" id="cars">
+       <option value="dollar" selected>Dollar $</option>
+       <option value="euro">Euro €</option>
+      </select>
         <button type="button" class="sign__in__btn">&rArr;</button>`;
   }
 
@@ -181,15 +184,15 @@ const numberFormat = function (num, locale, currency) {
 
 const display = function (acc, sort = false) {
   containerMovements.innerHTML = '';
-
-  const movs = sort
-    ? acc.movements.slice().sort((a, b) => a - b)
-    : acc.movements;
+  let accMovs = [...acc.movements];
+  const movs = sort ? accMovs.sort((a, b) => a - b) : accMovs;
 
   movs.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
-    const date = new Date(acc.movementsDates[i]);
+    const date = new Date(
+      acc.movementsDates[acc.movements.findIndex(num => num === mov)]
+    );
     const displayDate = formatMovementDate(date, acc.currency);
     const formattedMov = numberFormat(mov, acc.locale, acc.currency);
 
@@ -365,7 +368,7 @@ const stateBtn = function (state) {
 
       const searchAcc = accounts.find(
         acc =>
-          acc.owner ===
+          acc.username ===
           inputSignInUsername.value
             .toLowerCase()
             .split(' ')
@@ -373,20 +376,16 @@ const stateBtn = function (state) {
             .join('')
       );
       console.log(searchAcc);
-      if (!searchAcc) {
-        console.log('push');
-        // labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, {
-        //   hour: 'numeric',
-        //   minute: 'numeric',
-        //   day: 'numeric',
-        //   month: 'numeric',
-        //   year: 'numeric',
-        // }).format(new Date());
-        // containerApp.style.opacity = 100;
-        // updateUI(currentAccount);
-        // if (timer) clearInterval(timer);
-        // timer = startLogOutTimer();
-        // navInputs(2);
+      if (!searchAcc && !isNaN(inputSignInPin.value)) {
+        accounts.push({
+          owner: inputSignInUsername.value,
+          movements: [],
+          interestRate: 1.5,
+          pin: inputSignInPin.value,
+          movementsDates: [],
+          currency: 'USD',
+          locale: 'en-US',
+        });
       }
 
       inputSignInUsername.value = inputSignInPin.value = '';
@@ -476,7 +475,11 @@ btnClose.addEventListener('click', function (e) {
 btnSort.addEventListener('click', function (e) {
   e.preventDefault();
   sorted = !sorted;
-  display(currentAccount.movements, sorted);
+  display(currentAccount, sorted);
 });
 navInputs(1);
 createUsernames(accounts);
+
+currentAccount = account10;
+updateUI(currentAccount);
+containerApp.style.opacity = 100;
