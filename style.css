@@ -155,6 +155,27 @@ nav {
   background-color: #4fbbff;
   transition: all 0.3s;
 }
+
+.currency__sign__in__select {
+  border: none;
+  padding: 0.5rem 0.5rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  text-align: center;
+  width: 10rem;
+  border-radius: 10rem;
+  margin-right: 1rem;
+  color: inherit;
+  border: 1px solid #fff;
+  transition: all 0.3s;
+}
+
+.currency__sign__in__select:focus {
+  outline: none;
+  border: 1px solid #ff9900;
+  background-color: #ffbb44;
+}
+
 /* MAIN */
 .app {
   position: relative;

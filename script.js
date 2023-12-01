@@ -2,37 +2,10 @@
 
 /////////////////////////////////////////////////
 //////////////////// BANKIST ////////////////////
+///////////////// ALI 36 SAADAT /////////////////
 
 // Data
-// const account1 = {
-//   owner: 'Jonas Schmedtmann',
-//   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
-//   interestRate: 1.2, // %
-//   pin: 1111,
-// };
-
-// const account2 = {
-//   owner: 'Jessica Davis',
-//   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-//   interestRate: 1.5,
-//   pin: 2222,
-// };
-
-// const account3 = {
-//   owner: 'Steven Thomas Williams',
-//   movements: [200, -200, 340, -300, -20, 50, 400, -460],
-//   interestRate: 0.7,
-//   pin: 3333,
-// };
-
-// const account4 = {
-//   owner: 'Sarah Smith',
-//   movements: [430, 1000, 700, 50, 90],
-//   interestRate: 1,
-//   pin: 4444,
-// };
-
-const account10 = {
+const account1 = {
   owner: 'Ali Saadat',
   movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
   interestRate: 1.2, // %
@@ -52,7 +25,7 @@ const account10 = {
   locale: 'pt-PT', // de-DE
 };
 
-const account11 = {
+const account2 = {
   owner: 'Reza Saadat',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
@@ -71,8 +44,8 @@ const account11 = {
   currency: 'USD',
   locale: 'en-US',
 };
-// const accounts = [account1, account2, account3, account4, account10, account11];
-const accounts = [account10, account11];
+
+const accounts = [account1, account2];
 let currentAccount,
   timer,
   sorted = false;
@@ -96,8 +69,6 @@ const btnLoan = document.querySelector('.form__btn--loan');
 const btnClose = document.querySelector('.form__btn--close');
 const btnSort = document.querySelector('.btn--sort');
 
-// const inputLoginUsername = document.querySelector('.login__input--user');
-// const inputLoginPin = document.querySelector('.login__input--pin');
 const inputTransferTo = document.querySelector('.form__input--to');
 const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
@@ -143,14 +114,14 @@ const navInputs = function (state) {
           class="sign__in__input sign__in__input--user"
         />
         <input
-          type="text"
+          type="number"
           placeholder="PIN"
           maxlength="4"
-          class="sign__in__input sign__in__input--pin"
+          class="sign__in__input sign__in__input--pin" 
         />
-     <select name="cars" id="cars">
-       <option value="dollar" selected>Dollar $</option>
-       <option value="euro">Euro €</option>
+     <select class="currency__sign__in__select">
+       <option class="GGG" value="USD" selected>Dollar $</option>
+       <option value="EUR">Euro €</option>
       </select>
         <button type="button" class="sign__in__btn">&rArr;</button>`;
   }
@@ -278,11 +249,12 @@ const startLogOutTimer = function () {
       labelWelcome.textContent = 'Log in to get started';
       containerApp.style.opacity = 0;
       navInputs(1);
+      clearInputs();
     }
     time--;
   };
 
-  let time = 10;
+  let time = 120;
 
   tick();
   const timer = setInterval(tick, 1000);
@@ -290,13 +262,19 @@ const startLogOutTimer = function () {
   return timer;
 };
 
+const clearInputs = function () {
+  inputTransferTo.value = '';
+  inputTransferAmount.value = '';
+  inputLoanAmount.value = '';
+  inputCloseUsername.value = '';
+  inputClosePin.value = '';
+};
 // Event handlers
 const stateBtn = function (state) {
   if (state === 1) {
     const btnLogin = document.querySelector('.login__btn');
     const inputLoginUsername = document.querySelector('.login__input--user');
     const inputLoginPin = document.querySelector('.login__input--pin');
-    // const labelWelcome = document.querySelector('.welcome');
     const formChangeBtn = document.querySelector('.form__change__btn');
 
     if (btnLogin) {
@@ -307,10 +285,6 @@ const stateBtn = function (state) {
         );
 
         if (currentAccount?.pin === Number(inputLoginPin.value)) {
-          // labelWelcome.textContent = `Welcome Back ${
-          //   currentAccount.owner.split(' ')[0]
-          // }`;
-
           labelDate.textContent = new Intl.DateTimeFormat(
             currentAccount.locale,
             {
@@ -352,6 +326,7 @@ const stateBtn = function (state) {
         labelWelcome.textContent = 'Log in to get started';
         containerApp.style.opacity = 0;
         navInputs(1);
+        clearInputs();
       });
     }
   } else if (state === 3) {
@@ -360,6 +335,7 @@ const stateBtn = function (state) {
       '.sign__in__input--user'
     );
     const inputSignInPin = document.querySelector('.sign__in__input--pin');
+    const selectSignIn = document.querySelector('.currency__sign__in__select');
 
     const formChangeBtn = document.querySelector('.form__change__btn');
 
@@ -375,17 +351,23 @@ const stateBtn = function (state) {
             .map(name => name[0])
             .join('')
       );
-      console.log(searchAcc);
-      if (!searchAcc && !isNaN(inputSignInPin.value)) {
+      if (
+        inputSignInUsername.value &&
+        inputSignInPin.value &&
+        !searchAcc &&
+        inputSignInPin.value.length === 4
+      ) {
         accounts.push({
           owner: inputSignInUsername.value,
           movements: [],
           interestRate: 1.5,
-          pin: inputSignInPin.value,
+          pin: Number(inputSignInPin.value),
           movementsDates: [],
-          currency: 'USD',
-          locale: 'en-US',
+          currency: selectSignIn.value,
+          locale: selectSignIn.value === 'USD' ? 'en-US' : 'pt-PT',
         });
+        createUsernames(accounts);
+        navInputs(1);
       }
 
       inputSignInUsername.value = inputSignInPin.value = '';
@@ -469,6 +451,11 @@ btnClose.addEventListener('click', function (e) {
       accounts.findIndex(acc => acc.username === currentAccount.username),
       1
     );
+    clearInterval(timer);
+    labelWelcome.textContent = 'Log in to get started';
+    containerApp.style.opacity = 0;
+    navInputs(1);
+    clearInputs();
   }
 });
 
@@ -477,9 +464,7 @@ btnSort.addEventListener('click', function (e) {
   sorted = !sorted;
   display(currentAccount, sorted);
 });
+
+// Start
 navInputs(1);
 createUsernames(accounts);
-
-currentAccount = account10;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
