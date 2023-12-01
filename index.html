@@ -25,7 +25,6 @@
           placeholder="user"
           class="login__input login__input--user"
         />
-        <!-- In practice, use type="password" -->
         <input
           type="text"
           placeholder="PIN"
@@ -33,6 +32,7 @@
           class="login__input login__input--pin"
         />
         <button type="button" class="login__btn">&rarr;</button>
+        <button type="submit" class="logout__btn">Log Out</button>
       </form>
     </nav>
 
@@ -116,9 +116,10 @@
           />
           <input
             id="form_input_pin"
-            type="password"
-            maxlength="6"
+            type="number"
+            maxlength="4"
             class="form__input form__input--pin"
+            autocomplete="off"
           />
           <button type="button" class="form__btn form__btn--close">
             &rarr;
